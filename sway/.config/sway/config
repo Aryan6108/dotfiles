@@ -7,7 +7,7 @@ set $right l
 set $term foot
 
 ### Output configuration
-output * bg /home/sikder/Pictures/Wallpapers/nigga.png fill
+output * bg /home/sikder/Pictures/Wallpapers/shedinja.png fill
 output HDMI-A-1 mode 1920x1080@100Hz position 1280,0 scale 1
 
 ### Idle configuration
