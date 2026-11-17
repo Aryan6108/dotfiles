@@ -222,27 +222,8 @@ bindsym $mod+r mode "resize"
 #
 # Status Bar:
 #
-# Read `man 5 sway-bar` for more information about this section.
 bar {
-    position top
-    height 30
-    status_command ~/.config/sway/status.sh
-    font pango:Iosevka Semibold Extended, Symbols Nerd Font 11
-    status_padding 0
-    separator_symbol " "
-
-    colors {
-        background #151515
-        statusline #e8e8d3
-        separator  #303030
-
-        #                   border   background text
-        focused_workspace   #151515  #151515    #99ad6a
-        active_workspace    #151515  #151515    #D8AD4C
-        inactive_workspace  #151515  #151515    #888888
-        urgent_workspace    #e5786d  #e5786d    #151515
-        binding_mode        #e5786d  #e5786d    #151515
-    }
+    swaybar_command waybar
 }
 
 exec dbus-update-activation-environment DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE QT_QPA_PLATFORMTHEME
