@@ -1,0 +1,287 @@
+#!/usr/bin/env bash
+
+set -u
+
+dir=${PINS_DIR:-$HOME/.local/share/.pins}
+mkdir -p "$dir"
+
+TERM_RE_DEFAULT='^(foot|footclient|floating-foot|btop-float|kitty|alacritty|ghostty|com\.mitchellh\.ghostty|org\.wezfurlong\.wezterm|org\.kde\.konsole|org\.gnome\.terminal|org\.gnome\.ptyxis|terminator|tilix|xterm|st|st-256color|rio|contour)$'
+
+list_pins() {
+  [[ -d $dir ]] || return 0
+  if [[ ${PIN_SORT:-name} == time ]]; then
+    find "$dir" -maxdepth 1 -type f ! -name '.*' -printf '%T@\t%f\n' | sort -rn | cut -f2-
+  else
+    find "$dir" -maxdepth 1 -type f ! -name '.*' -printf '%f\n' | sort -fr
+  fi
+}
+
+# mime_of FILE -> image/* for images, otherwise whatever; anything non-image is treated as text
+mime_of() {
+  local f=$1 m
+  case ${f,,} in
+  *.png)
+    echo image/png
+    return
+    ;;
+  *.jpg | *.jpeg)
+    echo image/jpeg
+    return
+    ;;
+  *.gif)
+    echo image/gif
+    return
+    ;;
+  *.webp)
+    echo image/webp
+    return
+    ;;
+  *.bmp)
+    echo image/bmp
+    return
+    ;;
+  *.svg)
+    echo image/svg+xml
+    return
+    ;;
+  esac
+  if command -v file >/dev/null 2>&1; then
+    m=$(file --mime-type -b -- "$f" 2>/dev/null)
+    [[ -n $m ]] && {
+      echo "$m"
+      return
+    }
+  fi
+  echo text/plain
+}
+
+focused_app() {
+  command -v niri >/dev/null 2>&1 && command -v jq >/dev/null 2>&1 || return 0
+  niri msg -j focused-window 2>/dev/null | jq -r '.app_id // ""' 2>/dev/null
+}
+
+# same_as_existing FILE -> prints the name of an identical pin, if any
+same_as_existing() {
+  local f
+  for f in "$dir"/*; do
+    [[ -f $f ]] || continue
+    cmp -s -- "$1" "$f" && {
+      basename -- "$f"
+      return 0
+    }
+  done
+  return 1
+}
+
+# unique_name BASE EXT -> BASE+EXT, or BASE-2+EXT, BASE-3+EXT, ...
+unique_name() {
+  local base=$1 ext=$2 cand i=2
+  cand=$base$ext
+  while [[ -e $dir/$cand ]]; do
+    cand=$base-$i$ext
+    i=$((i + 1))
+  done
+  printf '%s' "$cand"
+}
+
+# save_clipboard -> pins the clipboard. Sets SAVED (name) on success, or ERR (message) on failure.
+SAVED="" ERR=""
+save_clipboard() {
+  local types tmp mime="" want ext name base first p uri dup
+  command -v wl-paste >/dev/null 2>&1 || {
+    ERR="wl-paste not found"
+    return 1
+  }
+  types=$(wl-paste --list-types 2>/dev/null)
+  [[ -n $types ]] || {
+    ERR="clipboard is empty"
+    return 1
+  }
+  tmp=$(mktemp "$dir/.save.XXXXXX") || {
+    ERR="cannot write to $dir"
+    return 1
+  }
+
+  if grep -q '^image/' <<<"$types"; then
+    # image data (screenshot, "copy image" in a browser, ...)
+    for want in image/gif image/png image/jpeg image/webp; do
+      grep -qx "$want" <<<"$types" && {
+        mime=$want
+        break
+      }
+    done
+    [[ -n $mime ]] || mime=$(grep -m1 '^image/' <<<"$types")
+    case $mime in
+    image/jpeg) ext=.jpg ;;
+    image/svg+xml) ext=.svg ;;
+    *) ext=.${mime#image/} ;;
+    esac
+    wl-paste --type "$mime" >"$tmp" 2>/dev/null
+    if [[ ! -s $tmp ]]; then
+      rm -f -- "$tmp"
+      ERR="could not read the image"
+      return 1
+    fi
+    if dup=$(same_as_existing "$tmp"); then
+      rm -f -- "$tmp"
+      ERR="already pinned: $dup"
+      return 1
+    fi
+    name=$(unique_name "pin-$(date +%Y%m%d-%H%M%S)" "$ext")
+    mv -- "$tmp" "$dir/$name"
+    SAVED=$name
+    return 0
+  fi
+
+  if grep -qx 'text/uri-list' <<<"$types"; then
+    # file(s) copied in a file manager
+    rm -f -- "$tmp"
+    while IFS= read -r uri; do
+      uri=${uri%$'\r'}
+      [[ $uri == file://* ]] || continue
+      p=${uri#file://}
+      p=$(printf '%b' "${p//%/\\x}")
+      [[ -f $p ]] || continue
+      first=$(basename -- "$p")
+      ext=""
+      [[ $first == *.* && $first != .* ]] && ext=.${first##*.}
+      name=$(unique_name "${first%"$ext"}" "$ext")
+      cp -- "$p" "$dir/$name"
+      SAVED=$name
+    done < <(wl-paste --type text/uri-list 2>/dev/null)
+    [[ -n $SAVED ]] && return 0
+    ERR="copied item is not a file"
+    return 1
+  fi
+
+  if grep -q '^text/' <<<"$types"; then
+    wl-paste --no-newline --type text >"$tmp" 2>/dev/null
+    if ! grep -q '[^[:space:]]' "$tmp"; then
+      rm -f -- "$tmp"
+      ERR="clipboard has no text"
+      return 1
+    fi
+    if dup=$(same_as_existing "$tmp"); then
+      rm -f -- "$tmp"
+      ERR="already pinned: $dup"
+      return 1
+    fi
+    # name = first non-empty line, made filename-safe
+    first=$(head -c 400 "$tmp" | grep -m1 '[^[:space:]]')
+    base=$(printf '%s' "$first" | sed -E 's/[^[:alnum:]._-]+/-/g; s/^[-.]+//; s/-+$//')
+    base=${base:0:40}
+    [[ -n $base ]] || base=pin-$(date +%Y%m%d-%H%M%S)
+    name=$(unique_name "$base" "")
+    mv -- "$tmp" "$dir/$name"
+    SAVED=$name
+    return 0
+  fi
+
+  rm -f -- "$tmp"
+  ERR="clipboard type not supported"
+  return 1
+}
+
+preview_pin() {
+  local f=$1 mime
+  mime=$(mime_of "$f")
+  if [[ $mime == image/* ]]; then
+    if command -v chafa >/dev/null 2>&1; then
+      chafa -f "${PIN_IMG:-sixel}" -s "${FZF_PREVIEW_COLUMNS:-60}x${FZF_PREVIEW_LINES:-24}" "$f" 2>/dev/null
+    else
+      echo "$(basename -- "$f")"
+      echo
+      echo "(install chafa to preview images)"
+    fi
+  else
+    head -c 65536 -- "$f"
+  fi
+}
+
+case ${1:-} in
+--list)
+  list_pins
+  exit 0
+  ;;
+--preview)
+  # Called by fzf with the highlighted pin name as $2.
+  name=${2:-}
+  [[ -n $name && $name != */* && -f $dir/$name ]] || exit 0
+  preview_pin "$dir/$name"
+  exit 0
+  ;;
+--delete)
+  name=${2:-}
+  [[ -n $name && $name != */* && -f $dir/$name ]] && rm -f -- "$dir/$name"
+  exit 0
+  ;;
+--save)
+  # fzf transform (Ctrl-s): pin the clipboard, print the fzf actions to run afterwards.
+  if save_clipboard; then
+    pos=$(list_pins | grep -nxF -- "$SAVED" | head -n1 | cut -d: -f1)
+    printf "clear-query+reload-sync['%s' --list]%s+change-header[pinned: %s]" \
+      "$(readlink -f "$0")" "${pos:++pos($pos)}" "$SAVED"
+  else
+    printf 'change-header[%s]' "$ERR"
+  fi
+  exit 0
+  ;;
+--paste)
+  # Run detached after the panel closed: send the paste shortcut to the focused window.
+  mime=${2:-}
+  f=${3:-}
+  [[ -f $f ]] || exit 0
+  command -v wtype >/dev/null 2>&1 || exit 0
+  if [[ $mime != image/* && ${PIN_PASTE:-auto} == type ]] &&
+    (($(wc -l <"$f") <= 1)) && ! grep -q $'\t' "$f"; then
+    wtype -- "$(cat -- "$f")"
+    exit 0
+  fi
+  app=$(focused_app)
+  if [[ -n $app ]] && grep -qiE "${PIN_TERM_RE:-$TERM_RE_DEFAULT}" <<<"$app"; then
+    wtype -M ctrl -M shift -k v -m shift -m ctrl
+  else
+    wtype -M ctrl -k v -m ctrl
+  fi
+  exit 0
+  ;;
+esac
+
+self=$(readlink -f "$0")
+
+# Colors use the terminal palette (3 = yellow, 10 = bright green), so your theme applies.
+fzf_ui=(
+  --no-sort
+  --no-height --border=none --padding=0 --margin=0
+  --layout=reverse-list
+  --no-info --no-separator --no-scrollbar
+  --list-border=sharp --list-label=' Pins ' --list-label-pos=2
+  --input-border=sharp --input-label=' Search ' --input-label-pos=2
+  --preview="'$self' --preview {}"
+  --preview-window='right:50%:wrap:border-sharp'
+  --preview-label=' Preview ' --preview-label-pos=2
+  --prompt='>> ' --pointer='' --marker=''
+  --color='fg:-1,bg:-1,hl:11,fg+:10:bold,bg+:-1,hl+:11:bold:underline,gutter:-1,pointer:10:bold,marker:10,prompt:12,query:-1,info:8,spinner:11,border:7,label:6,preview-border:6,preview-label:6,header:14'
+  --bind='esc:abort'
+  --bind="ctrl-s:transform['$self' --save]"
+  --bind="ctrl-d:execute-silent('$self' --delete {})+reload-sync('$self' --list)"
+  --bind='start,result,focus:transform-prompt[printf "> " "$FZF_POS" "$FZF_MATCH_COUNT"]'
+)
+
+pick=$(list_pins | SHELL=/bin/sh fzf "${fzf_ui[@]}") || exit 0
+
+[[ -n $pick && $pick != */* && -f $dir/$pick ]] || exit 0
+
+file=$dir/$pick
+mime=$(mime_of "$file")
+
+if [[ $mime == image/* ]]; then
+  wl-copy --type "$mime" <"$file"
+else
+  wl-copy --type text/plain <"$file"
+fi
+
+[[ ${PIN_PASTE:-auto} == copy ]] && exit 0
+
+# Paste after the panel has closed and focus is back on the previous window.
+setsid -f sh -c 'sleep 0.2; exec "$@"' sh "$self" --paste "$mime" "$file" </dev/null >/dev/null 2>&1
