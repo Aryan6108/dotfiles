@@ -1,6 +1,4 @@
 #!/bin/bash
-# swaybar status script (i3bar protocol) - replaces waybar modules: clock, memory, pulseaudio
-# Save as ~/.config/sway/status.sh and chmod +x it.
 
 # Colors (same palette as the waybar style.css)
 FG="#e8e8d3"
@@ -8,7 +6,6 @@ GRAY="#888888"
 GREEN="#99ad6a"
 BLUE="#8197bf"
 
-# ---- click handling (reads click events from swaybar on stdin) ----
 exec 3<&0
 {
   while read -r line <&3; do
