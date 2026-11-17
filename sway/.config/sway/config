@@ -69,6 +69,7 @@ seat seat0 xcursor_theme Bibata-Modern-Ice 24
 # Moving around:
 #
     # Move your focus around
+    bindsym $mod+equal exec ~/.config/sway/new-workspace.sh
     bindsym $mod+$left focus left
     bindsym $mod+j workspace next
     bindsym $mod+k workspace prev
@@ -236,7 +237,7 @@ bar {
         separator  #303030
 
         #                   border   background text
-        focused_workspace   #151515  #151515    #D8AD4C
+        focused_workspace   #151515  #151515    #99ad6a
         active_workspace    #151515  #151515    #D8AD4C
         inactive_workspace  #151515  #151515    #888888
         urgent_workspace    #e5786d  #e5786d    #151515

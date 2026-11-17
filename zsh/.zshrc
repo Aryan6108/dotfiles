@@ -34,3 +34,11 @@ export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 eval "$(starship init zsh)"
 
 fastfetch
+
+#my lazy aliases
+dots() {
+  git -C ~/dotfiles add -A &&
+  git -C ~/dotfiles commit -m "${*:-update}" &&
+  git -C ~/dotfiles push
+}
+
