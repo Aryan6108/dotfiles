@@ -6,7 +6,7 @@
 
     "modules-left": ["sway/workspaces"],
     "modules-center": ["clock"],
-    "modules-right": ["memory", "pulseaudio"],
+    "modules-right": ["tray", "memory", "pulseaudio"],
 
     "sway/workspaces": {
       "persistent-workspaces": {
@@ -44,5 +44,9 @@
         },
         "scroll-step": 2,
         "on-click": "pavucontrol"
+    },
+    "tray": {
+        "icon-size":18,
+        "spacing":10
     }
 }
