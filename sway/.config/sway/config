@@ -250,22 +250,3 @@ exec wireplumber
 exec pipewire-pulse
 
 include /etc/sway/config.d/*
-
-# --- persistent workspaces 1-9 ---
-# placeholder: floating, 1px, invisible, never focused
-for_window [app_id="^wsholder[1-9]$"] floating enable, resize set 1 1, border none, opacity 0
-no_focus [app_id="^wsholder[1-9]$"]
-
-# pin each placeholder to its own workspace (works at map time, no focus switching)
-assign [app_id="^wsholder1$"] workspace number 1
-assign [app_id="^wsholder2$"] workspace number 2
-assign [app_id="^wsholder3$"] workspace number 3
-assign [app_id="^wsholder4$"] workspace number 4
-assign [app_id="^wsholder5$"] workspace number 5
-assign [app_id="^wsholder6$"] workspace number 6
-assign [app_id="^wsholder7$"] workspace number 7
-assign [app_id="^wsholder8$"] workspace number 8
-assign [app_id="^wsholder9$"] workspace number 9
-
-# spawn them once at login (use exec, not exec_always, so reload doesn't duplicate)
-exec sh -c 'for i in 1 2 3 4 5 6 7 8 9; do foot --app-id=wsholder$i -o pad=0x0 -e cat & done'
