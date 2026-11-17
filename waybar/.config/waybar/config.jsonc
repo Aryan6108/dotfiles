@@ -1,0 +1,48 @@
+{
+    "layer": "top",
+    "position": "top",
+    "height": 30,
+    "spacing": 0,
+
+    "modules-left": ["sway/workspaces"],
+    "modules-center": ["clock"],
+    "modules-right": ["memory", "pulseaudio"],
+
+    "sway/workspaces": {
+      "persistent-workspaces": {
+          "1": [], "2": [], "3": [], "4": [], "5": [],
+          "6": [], "7": [], "8": [], "9": []
+      }
+    },
+
+    "memory": {
+        "interval": 1,
+        "format": "RAM: {used:0.2f} GiB",
+        "tooltip-format": "{used:0.2f} / {total:0.2f} GiB ({percentage}%)"
+    },
+
+    "clock": {
+        "format": "{:%I:%M - %a %d}",
+        "tooltip-format": "<tt>{calendar}</tt>",
+        "on-click": "swaymsg kill"
+    },
+
+    "bluetooth": {
+        "format": "󰂯",
+        "format-disabled": "󰂲",
+        "format-connected": "󰂱",
+        "tooltip-format": "{status}",
+        "tooltip-format-connected": "{device_alias}",
+        "on-click": "blueman-manager"
+    },
+
+    "pulseaudio": {
+        "format": "{icon} {volume}%",
+        "format-muted": "󰝟 {volume}%",
+        "format-icons": {
+            "default": ["󰕿", "󰖀", "󰕾"]
+        },
+        "scroll-step": 2,
+        "on-click": "pavucontrol"
+    }
+}

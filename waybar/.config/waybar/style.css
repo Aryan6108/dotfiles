@@ -1,0 +1,126 @@
+@define-color bg      #151515;
+@define-color bg1     #303030;
+@define-color fg      #e8e8d3;
+@define-color gray    #888888;
+@define-color red     #e5786d;
+@define-color green   #99ad6a;
+@define-color yellow  #d8ad4c;
+@define-color blue    #8197bf;
+@define-color purple  #c6b6ee;
+@define-color aqua    #8fbfdc;
+
+* {
+    font-family: "Iosevka Semibold Extended", "Symbols Nerd Font";
+    font-size: 15px;
+    font-weight: 500;
+    border: none;
+    border-radius: 0;
+    min-height: 0;
+    box-shadow: none;
+    text-shadow: none;
+}
+
+window#waybar {
+    background-color: @bg;
+    color: @fg;
+    border-bottom: 1px solid @bg1;
+}
+
+tooltip {
+    background-color: @bg;
+    color: @fg;
+    border: 1px solid @bg1;
+    border-radius: 0;
+}
+
+tooltip label {
+    color: @fg;
+}
+
+/* ---------- Workspaces ---------- */
+#workspaces {
+    margin: 0;
+    padding: 0;
+}
+
+/* non-empty workspaces: yellow */
+#workspaces button {
+    padding: 0 6px;
+    margin: 0;
+    background: transparent;
+    color: @yellow;
+    border-bottom: 2px solid transparent;
+    transition: none;
+}
+
+/* empty workspaces: gray */
+#workspaces button.empty {
+    color: @gray;
+}
+
+/* focused workspace: yellow with green underline */
+#workspaces button.active,
+#workspaces button.focused {
+    color: @yellow;
+    border-bottom: 2px solid @green;
+}
+
+#workspaces button.urgent {
+    color: @bg;
+    background-color: @red;
+}
+
+#workspaces button:hover {
+    background-color: @bg1;
+    color: @fg;
+    box-shadow: none;
+}
+
+/*Modules*/
+#memory,
+#clock,
+#bluetooth,
+#pulseaudio {
+    padding: 0 12px;
+    background: transparent;
+}
+
+#memory {
+    color: @green;
+}
+
+#clock {
+    color: @fg;
+    font-weight: bold;
+}
+
+#clock:hover {
+    color: @yellow;
+}
+
+#bluetooth {
+    color: @blue;
+}
+
+#bluetooth.disabled,
+#bluetooth.off {
+    color: @gray;
+}
+
+#bluetooth.connected {
+    color: @aqua;
+}
+
+#pulseaudio {
+    color: @purple;
+}
+
+#pulseaudio.muted {
+    color: @gray;
+}
+
+#bluetooth:hover,
+#pulseaudio:hover {
+    background-color: @bg1;
+}
+
