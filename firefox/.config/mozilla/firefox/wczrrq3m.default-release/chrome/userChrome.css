@@ -1,0 +1,89 @@
+/* Font */
+* {
+  font-family: "Iosevka Extended", monospace !important;
+}
+
+/* Square corners */
+* {
+  border-radius: 0px !important;
+}
+
+/* Jellybeansish theme */
+:root {
+  --gb-bg:     #151515;
+  --gb-bg1:    #202020;
+  --gb-bg2:    #303030;
+  --gb-bg3:    #404040;
+  --gb-sel:    #4a4a4a;
+  --gb-fg:     #e8e8d3;
+  --gb-dim:    #888888;
+  --gb-accent: #ffa759;
+
+  --lwt-accent-color: var(--gb-bg) !important;
+  --lwt-accent-color-inactive: var(--gb-bg) !important;
+  --lwt-text-color: var(--gb-fg) !important;
+  --toolbar-bgcolor: var(--gb-bg) !important;
+  --toolbar-color: var(--gb-fg) !important;
+  --tab-selected-bgcolor: var(--gb-bg2) !important;
+  --tab-selected-textcolor: var(--gb-fg) !important;
+  --tab-loading-fill: var(--gb-accent) !important;
+  --toolbarbutton-hover-background: var(--gb-bg3) !important;
+  --toolbarbutton-active-background: var(--gb-sel) !important;
+
+  --toolbar-field-background-color: var(--gb-bg1) !important;
+  --toolbar-field-color: var(--gb-fg) !important;
+  --toolbar-field-border-color: var(--gb-bg3) !important;
+  --toolbar-field-focus-background-color: var(--gb-bg2) !important;
+  --toolbar-field-focus-color: var(--gb-fg) !important;
+  --toolbar-field-focus-border-color: var(--gb-accent) !important;
+  --urlbar-box-bgcolor: var(--gb-bg1) !important;
+  --urlbar-box-hover-bgcolor: var(--gb-bg3) !important;
+  --urlbar-box-text-color: var(--gb-fg) !important;
+  --autocomplete-popup-highlight-background: var(--gb-sel) !important;
+  --autocomplete-popup-highlight-color: var(--gb-fg) !important;
+
+  --arrowpanel-background: var(--gb-bg1) !important;
+  --arrowpanel-color: var(--gb-fg) !important;
+  --arrowpanel-border-color: var(--gb-bg3) !important;
+  --panel-background: var(--gb-bg1) !important;
+  --panel-color: var(--gb-fg) !important;
+  --sidebar-background-color: var(--gb-bg) !important;
+  --sidebar-text-color: var(--gb-fg) !important;
+  --sidebar-border-color: var(--gb-bg3) !important;
+
+  --focus-outline-color: var(--gb-accent) !important;
+  --button-primary-bgcolor: var(--gb-accent) !important;
+  --button-primary-color: var(--gb-bg) !important;
+  --button-primary-hover-bgcolor: #d8ad4c !important;
+  --button-primary-active-bgcolor: #bd8645 !important;
+}
+
+/* Force the #151515 background directly */
+:root,
+#main-window,
+#navigator-toolbox,
+#navigator-toolbox-background,
+#titlebar,
+#TabsToolbar,
+#TabsToolbar-customization-target,
+#nav-bar,
+#PersonalToolbar,
+#toolbar-menubar,
+#sidebar-main,
+#sidebar-box,
+#sidebar-container,
+.browser-toolbar,
+toolbar {
+  background-color: #151515 !important;
+  background-image: none !important;
+  color: #e8e8d3 !important;
+}
+
+/* Dropdowns/panels */
+panel, menupopup, .panel-arrowcontent, #urlbar-results {
+  --panel-background: #202020 !important;
+  --arrowpanel-background: #202020 !important;
+  background-color: #202020 !important;
+  color: #e8e8d3 !important;
+}
+
