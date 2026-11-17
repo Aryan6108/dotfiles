@@ -43,8 +43,9 @@ dots() {
 }
 
 # integration of nnn
- export NNN_OPTS='a'
+export NNN_OPTS='a'
 export NNN_PLUG='p:preview-tui;v:popview'
 export NNN_PREVIEWIMGPROG=sixel
 export TERMINAL=foot
 export NNN_TERMINAL=foot
+eval "$(zoxide init zsh)"
