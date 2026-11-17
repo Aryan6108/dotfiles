@@ -112,7 +112,7 @@ tooltip label {
 }
 
 #pulseaudio {
-    color: @purple;
+    color: @aqua;
 }
 
 #pulseaudio.muted {
