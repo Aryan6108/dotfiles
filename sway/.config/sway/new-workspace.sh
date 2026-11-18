@@ -1,3 +1,4 @@
 #!/bin/sh
-n=$(swaymsg -t get_workspaces | jq length)
-swaymsg workspace number $((n + 1))
+used=$(swaymsg -t get_workspaces | jq '[.[].num]')
+next=$(echo "$used" | jq 'first(range(1; 100) as $i | select(. | index($i) | not) | $i)')
+swaymsg workspace number "$next"
