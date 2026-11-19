@@ -49,3 +49,6 @@ export NNN_PREVIEWIMGPROG=sixel
 export TERMINAL=foot
 export NNN_TERMINAL=foot
 eval "$(zoxide init zsh)"
+
+export FSEL_ROUNDED_BORDERS=false
+export FSEL_ITEMS_SELECTION_ROUNDED=false

@@ -54,8 +54,8 @@
   --focus-outline-color: var(--gb-accent) !important;
   --button-primary-bgcolor: var(--gb-accent) !important;
   --button-primary-color: var(--gb-bg) !important;
-  --button-primary-hover-bgcolor: #d8ad4c !important;
-  --button-primary-active-bgcolor: #bd8645 !important;
+  --button-primary-hover-bgcolor: #e5786d !important;
+  --button-primary-active-bgcolor: #cf6a4c !important;
 }
 
 /* Force the #151515 background directly */

@@ -50,7 +50,6 @@ seat seat0 xcursor_theme Bibata-Modern-Ice 24
     bindsym $mod+x kill
 
     # Start your launcher
-    bindsym $mod+space exec foot --app-id fsel-launcher -e /home/sikder/.cargo/bin/fsel --launch-prefix=setsid
     bindsym $mod+d exec foot --app-id=concord -o pad=0x0 -e /home/sikder/.cargo/bin/concord
     bindsym $mod+p exec foot --app-id=pin -o pad=0x0 -o resize-by-cells=no -e $HOME/.local/bin/pin
     # Drag floating windows by holding down $mod and left mouse button.
@@ -148,13 +147,12 @@ seat seat0 xcursor_theme Bibata-Modern-Ice 24
     gaps inner 10
     default_border pixel 2
     default_floating_border pixel 2
-    client.focused #99ad6a #99ad6a #ffffff #99ad6a #99ad6a
-    client.focused_inactive #888888 #888888 #ffffff #888888 #888888
-    client.unfocused #d8ad4c #d8ad4c #ffffff #d8ad4c #d8ad4c
-    client.urgent #fb4934 #fb4934 #ffffff #fb4934 #fb4934
+    client.focused          #d8ad4c #d8ad4c #151515 #d8ad4c #d8ad4c
+    client.focused_inactive #303030 #303030 #e8e8d3 #303030 #303030
+    client.unfocused        #202020 #202020 #888888 #202020 #202020
+    client.urgent           #e5786d #e5786d #151515 #e5786d #e5786d
 
     for_window [app_id="^(floating-foot|btop|tpower|tpanels|tnotif|taudio|tgif|temoji|tclip|tlaunch|pin)$"] floating enable, border pixel 2, resize set 830 550, move position center
-    for_window [app_id="^fsel-launcher$"] floating enable, border pixel 2, resize set 640 400, move position center
     for_window [app_id="^mpv$"] floating enable, border pixel 2, resize set 830 550, move position center
     for_window [app_id="firefox" title="^Picture-in-Picture$"] floating enable, border pixel 2
 #
@@ -177,10 +175,10 @@ mode "resize" {
     # right will grow the containers width
     # up will shrink the containers height
     # down will grow the containers height
-    bindsym $left resize shrink width 10px
-    bindsym $down resize grow height 10px
-    bindsym $up resize shrink height 10px
-    bindsym $right resize grow width 10px
+    bindsym $left resize shrink width 50px
+    bindsym $down resize grow height 50px
+    bindsym $up resize shrink height 50px
+    bindsym $right resize grow width 50px
 
     # Ditto, with arrow keys
     bindsym Left resize shrink width 10px
@@ -232,3 +230,11 @@ exec wireplumber
 exec pipewire-pulse
 
 include /etc/sway/config.d/*
+
+# fsel integration
+set $menu foot --title launcher -e fsel -d
+bindsym $mod+space exec $menu
+for_window [title="^launcher$"] floating enable, resize set width 500 height 430, border pixel 2
+
+
+font pango:Iosevka Semibold Extended 10
