@@ -87,3 +87,19 @@ panel, menupopup, .panel-arrowcontent, #urlbar-results {
   color: #e8e8d3 !important;
 }
 
+@media (max-width: 1000px) {
+  #sidebar-container,
+  #sidebar-main,
+  #sidebar-main + #sidebar-splitter,
+  #sidebar-launcher-splitter,
+  #vertical-tabs,
+  sidebar-main {
+    display: none !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+  }
+}
