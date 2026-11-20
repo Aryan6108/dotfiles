@@ -175,10 +175,10 @@ mode "resize" {
     # right will grow the containers width
     # up will shrink the containers height
     # down will grow the containers height
-    bindsym $left resize shrink width 50px
-    bindsym $down resize grow height 50px
-    bindsym $up resize shrink height 50px
-    bindsym $right resize grow width 50px
+    bindsym $left resize shrink width 100px
+    bindsym $down resize grow height 100px
+    bindsym $up resize shrink height 100px
+    bindsym $right resize grow width 100px
 
     # Ditto, with arrow keys
     bindsym Left resize shrink width 10px
@@ -237,4 +237,4 @@ bindsym $mod+space exec $menu
 for_window [title="^launcher$"] floating enable, resize set width 500 height 430, border pixel 2
 
 
-font pango:Iosevka Semibold Extended 10
+font pango:Iosevka Semibold Extended 11

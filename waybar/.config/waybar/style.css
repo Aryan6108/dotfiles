@@ -23,7 +23,7 @@
 window#waybar {
     background-color: @bg;
     color: @fg;
-    border-bottom: 1px solid @bg1;
+    border-bottom: 2px solid @bg1;
 }
 
 tooltip {
@@ -133,3 +133,4 @@ tooltip label {
 #tray > .needs-attention {
     -gtk-icon-effect: highlight;
 }
+
