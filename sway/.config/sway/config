@@ -144,7 +144,7 @@ seat seat0 xcursor_theme Bibata-Modern-Ice 24
     # Move focus to the parent container
     bindsym $mod+a focus parent
 
-    gaps inner 10
+    gaps inner 8
     default_border pixel 2
     default_floating_border pixel 2
     client.focused          #d8ad4c #d8ad4c #151515 #d8ad4c #d8ad4c
@@ -228,6 +228,8 @@ exec dbus-update-activation-environment DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESK
 exec pipewire
 exec wireplumber
 exec pipewire-pulse
+exec lxqt-policykit-agent
+exec_always dbus-update-activation-environment ... QT_QPA_PLATFORMTHEME
 
 include /etc/sway/config.d/*
 

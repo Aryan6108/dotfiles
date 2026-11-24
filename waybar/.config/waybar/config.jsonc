@@ -6,7 +6,7 @@
 
     "modules-left": ["sway/workspaces"],
     "modules-center": ["clock"],
-    "modules-right": ["tray", "memory", "pulseaudio"],
+    "modules-right": ["tray", "pulseaudio"],
 
     "sway/workspaces": {
       "persistent-workspaces": {
